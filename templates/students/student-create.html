@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+
+{% block title %} {% if student %} EduLMS - Update Student {% else %} EduLMS - Create Student {% endif %} {% endblock %}
+
+{% block content %}
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;">{% if student %} Update Student {% else %} Create New Student {% endif %}</h1>
+            <p style="color: var(--text-light);">Add a new student to the system</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="card-grid">
+                <div class="card">
+                    <h3 style="color: var(--text-light); margin-bottom: 1rem;">Personal Information</h3>
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ student.first_name }}" class="form-control" required
+                               placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" name="last_name" id="last_name" value="{{ student.last_name }}" class="form-control" required
+                               placeholder="Enter last name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ student.email }}" required
+                               placeholder="Enter email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" id="phone_number" name="phone_number" value="{{ student.phone_number }}" class="form-control"
+                               placeholder="Enter phone number">
+                    </div>
+                </div>
+
+
+                <div class="card">
+                        <h3 style="color: var(--text-light); margin-bottom: 1rem;">Course Enrollment</h3>
+                        <div class="form-group">
+                            <label for="courses">Select Courses</label>
+                            <select multiple id="courses" class="form-control"  size="8" name="courses">
+                                {% for course in courses %}
+                                    <option value="{{ course.id }}">{{ course.course_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <p style="color: var(--text-light); font-size: 0.875rem; margin-top: 0.5rem;">
+                                Hold Ctrl/Cmd to select multiple courses
+                            </p>
+                        </div>
+                </div>
+            </div>
+
+            <div class="card mt-2">
+                <h3 style="color: var(--text-light); margin-bottom: 1rem;">Additional Information</h3>
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" class="form-control" name="notes" rows="4"
+                            placeholder="Add any additional notes about the student">{{ student.notes }}</textarea>
+                </div>
+            </div>
+
+            <div class="mt-2" style="display: flex; gap: 1rem;">
+                {% if student %}
+                    <button type="submit" class="btn btn-primary">Update Student</button>
+                    <a href="{{ student.get_detail_url }}" class="btn btn-danger">Cancel</a>
+                {% else %}
+                    <button type="submit" class="btn btn-primary">Create Student</button>
+                    <a href="{% url 'students:list' %}" class="btn btn-danger">Cancel</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+{% endblock %}

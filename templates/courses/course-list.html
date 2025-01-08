@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+{% block title %} EduLMS - Course List {% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h1 style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;">Courses</h1>
+                <p style="color: var(--text-light);">Manage and monitor your courses</p>
+            </div>
+            <a href="{% url 'courses:create' %}" class="btn btn-primary">+ Add New Course</a>
+        </div>
+
+        <div class="card-grid">
+            {% for course in courses %}
+                   <div class="card">
+                    <div class="badge badge-success">Active</div>
+                    <h3 style="color: var(--text); margin: 1rem 0;">{{ course.course_name }}</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        {{ course.description }}
+                    </p>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <span style="color: var(--text-light);">Duration: {{ course.duration }}</span>
+                        <span style="color: var(--primary); font-weight: 600;">${{ course.price }}</span>
+                    </div>
+                    <div class="progress-bar" style="margin-bottom: 1rem;">
+                        <div class="progress-bar-fill" style="width: 15%"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <span style="color: var(--text-light);">{{ course.max_student }} Students enrolled</span>
+                        <span style="color: var(--text-light);">5% Completed</span>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="{{ course.get_detail_url }}" class="btn btn-primary" style="flex: 1;">View Details</a>
+                        <a href="{{ course.get_delete_url }}" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            {% empty %}
+                    No added Course
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

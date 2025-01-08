@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+
+{% block title %} LMS - Course Detail {% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="badge badge-success">Active Course</div>
+    <h2 style="margin: 1rem 0; font-size: 2rem; color: var(--primary);">{{ course.course_name }}</h2>
+
+    <div class="card-grid">
+        <div class="card">
+            <h3 style="color: var(--text-light)">Course Details</h3>
+            <div class="form-group">
+                <label>Duration</label>
+                <p style="color: var(--primary); font-size: 1.25rem; font-weight: 600;">{{ course.duration }}</p>
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <p style="color: var(--primary); font-size: 1.5rem; font-weight: 700;">${{ course.price }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: var(--text-light)">Course Statistics</h3>
+            <div class="form-group">
+                <label>Enrolled Students</label>
+                <p style="color: var(--primary); font-size: 2rem; font-weight: 700;">{{ course.max_student }}</p>
+            </div>
+            <div class="form-group">
+                <label>Average Progress</label>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: 15%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <p style="line-height: 1.8; color: var(--text-light)">
+            {{ course.description }}
+        </p>
+    </div>
+
+    <div class="form-group mt-2">
+        <h3 style="color: var(--text-light); margin-bottom: 1rem;">Enrolled Students</h3>
+        <div class="card" style="overflow: auto;">
+            {% if course.students.all %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th>Enrollment Date</th>
+                        <th>Progress</th>
+                    </tr>
+                </thead>
+                {% for student in course.students.all %}
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                                    {{ student.first_name|slice:":1" }} {{ student.last_name|slice:":1" }}
+                                </div>
+                                {{ student.first_name }} {{ student.last_name }}
+                            </div>
+                        </td>
+                        <td>{{ student.email }}</td>
+                        <td>{{ student.created_at }}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                5%
+                                <div class="progress-bar" style="flex: 1;">
+                                    <div class="progress-bar-fill" style="width: 5%"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+            {% else %}
+                <h3>Not added students!</h3>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="mt-2" style="display: flex; gap: 1rem;">
+        <a href="{% url 'courses:list' %}" class="btn btn-primary">Back to List</a>
+        <button class="btn btn-danger"><a href="{{ course.get_delete_url }}">Delete Course</a></button>
+    </div>
+</div>
+{% endblock %}

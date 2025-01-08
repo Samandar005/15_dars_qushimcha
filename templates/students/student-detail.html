@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+
+{% block title %} EduLMS - Student Detail {% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
+        <div style="display: flex; gap: 1.5rem; align-items: center;">
+            <div style="width: 80px; height: 80px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 600;">
+                {{ student.first_name|slice:":1" }}{{ student.last_name|slice:":1" }}
+            </div>
+            <div>
+                <h1 style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;">{{ student.first_name }} {{ student.last_name }}</h1>
+                <p style="color: var(--text-light);">Student ID: {{ student.id }}</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-primary"><a href="{{ student.get_update_url }}">Edit Profile</a></button>
+            <a href="{{ student.get_delete_url }}" class="btn btn-danger">Delete Student</a>
+        </div>
+    </div>
+
+    <div class="card-grid">
+        <!-- Personal Information Card -->
+        <div class="card">
+            <h3 style="color: var(--text-light); margin-bottom: 1rem;">Personal Information</h3>
+            <div class="form-group">
+                <label>Email</label>
+                <p style="color: var(--text);">{{ student.email }}</p>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <p style="color: var(--text);">{{ student.phone_number }}</p>
+            </div>
+            <div class="form-group">
+                <label>Joined Date</label>
+                <p style="color: var(--text);">{{ student.created_at }}</p>
+            </div>
+        </div>
+
+        <!-- Overall Progress Card -->
+        <div class="card">
+            <h3 style="color: var(--text-light); margin-bottom: 1rem;">Overall Progress</h3>
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">
+                    5%
+                </div>
+                <div class="progress-bar" style="margin-bottom: 1rem;">
+                    <div class="progress-bar-fill" style="width: 5%"></div>
+                </div>
+                <p style="color: var(--text-light);">Average completion across all courses</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enrolled Courses Section -->
+    <div class="card mt-2">
+        <h3 style="color: var(--text-light); margin-bottom: 1rem;">Enrolled Courses</h3>
+
+        <div class="card-grid">
+            <!-- Course 1 -->
+            {% for course in student.course.all %}
+            <div class="card">
+                <div class="badge badge-success">Active</div>
+                <h4 style="color: var(--text); margin: 1rem 0;">{{ course.course_name }}</h4>
+                <div style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="color: var(--text-light);">
+                            {% if course.status == 'in_progress' %}Progress
+                            {% elif course.status == 'completed' %}Completed
+                            {% elif course.status == 'passed' %}Passed
+                            {% endif %}
+                        </span>
+                        <span style="color: var(--primary); font-weight: 600;">5%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: 5%"></div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-light); font-size: 0.875rem;">
+                    <span>Start:  {{ course.start_date }}</span>
+                    <span>End: {{ course.end_date }}</span>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- Performance Analytics -->
+    <div class="card mt-2">
+        <h3 style="color: var(--text-light); margin-bottom: 1rem;">Performance Analytics</h3>
+        <div class="card-grid">
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">
+                    85%
+                </div>
+                <p style="color: var(--text-light);">Average Assessment Score</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;">
+                    95%
+                </div>
+                <p style="color: var(--text-light);">Attendance Rate</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">
+                    12
+                </div>
+                <p style="color: var(--text-light);">Completed Assignments</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card mt-2">
+        <h3 style="color: var(--text-light); margin-bottom: 1rem;">Recent Activity</h3>
+        <div class="card">
+            {% if courses %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Created Date</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.course_name }}</td>
+                    <td>{{ course.created_at }}</td>
+                    <td>
+                        {% if course.status == 'completed' %}
+                        <div class="badge badge-success">Completed</div>
+                        {% elif course.status == 'in_progress' %}
+                        <div class="badge badge-warning">In Progress</div>
+                        {% elif course.status == 'passed' %}
+                        <div class="badge badge-success">Passed</div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <h3>Not found</h3>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-2">
+        <a href="{% url 'students:list' %}" class="btn btn-primary">Back to Student List</a>
+    </div>
+</div>
+{% endblock %}
