@@ -77,6 +77,7 @@ def student_delete(request, year, month, day, slug):
     ctx = {'student': student}
     return render(request, 'students/student-delete-confirm.html', ctx)
 
+
 def student_update(request, year, month, day, slug):
     student = get_object_or_404(
         Student,
@@ -85,24 +86,40 @@ def student_update(request, year, month, day, slug):
         created_at__month=month,
         created_at__day=day
     )
+
+    selected_courses = student.course.values_list('id', flat=True)
+
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         phone_number = request.POST.get('phone_number')
-        course = request.POST.get('course')
+        courses = request.POST.getlist('courses')  # multiple uchun getlist
         notes = request.POST.get('notes')
+
+        # Ma'lumotlarni tekshirish
         if (
                 first_name and last_name and email and
-                phone_number and course and notes
+                phone_number and courses and notes
         ):
             student.first_name = first_name
             student.last_name = last_name
             student.email = email
             student.phone_number = phone_number
-            student.course = course
             student.notes = notes
+
+            # Kurslarni yangilash
+            student.course.set(courses)  # yangi kurslarni qo'shish
+
             student.save()
+            # Muvaffaqiyatli yangilanganidan so'ng, foydalanuvchini ma'lum qiling
+
             return redirect(student.get_detail_url())
-    ctx = {'student': student}
+
+    ctx = {
+        'student': student,
+        'courses': Course.objects.all(),  # Barcha kurslarni olish
+        'selected_courses': selected_courses  # Tanlangan kurslarni olish
+    }
+
     return render(request, 'students/student-create.html', ctx)
