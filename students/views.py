@@ -94,10 +94,10 @@ def student_update(request, year, month, day, slug):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         phone_number = request.POST.get('phone_number')
-        courses = request.POST.getlist('courses')  # multiple uchun getlist
+        courses = request.POST.getlist('courses')
         notes = request.POST.get('notes')
 
-        # Ma'lumotlarni tekshirish
+
         if (
                 first_name and last_name and email and
                 phone_number and courses and notes
@@ -108,18 +108,18 @@ def student_update(request, year, month, day, slug):
             student.phone_number = phone_number
             student.notes = notes
 
-            # Kurslarni yangilash
-            student.course.set(courses)  # yangi kurslarni qo'shish
+
+            student.course.set(courses)
 
             student.save()
-            # Muvaffaqiyatli yangilanganidan so'ng, foydalanuvchini ma'lum qiling
+
 
             return redirect(student.get_detail_url())
 
     ctx = {
         'student': student,
-        'courses': Course.objects.all(),  # Barcha kurslarni olish
-        'selected_courses': selected_courses  # Tanlangan kurslarni olish
+        'courses': Course.objects.all(),
+        'selected_courses': selected_courses
     }
 
     return render(request, 'students/student-create.html', ctx)

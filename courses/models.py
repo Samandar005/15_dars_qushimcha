@@ -5,7 +5,7 @@ from django.shortcuts import reverse
 
 class Course(models.Model):
 
-    STATUS_CHOICES = ( # Faqatgina student uchun statusni to'g'irlay olmadim shuning status barchaga bir xil
+    STATUS_CHOICES = (
         ('completed', 'Completed'),
         ('in_progress', 'In Progress'),
         ('passed', 'Passed')
